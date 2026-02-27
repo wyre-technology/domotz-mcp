@@ -1,0 +1,17 @@
+services:
+  domotz-mcp:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - MCP_TRANSPORT=http
+      - MCP_HTTP_PORT=8080
+      - AUTH_MODE=${AUTH_MODE:-gateway}
+      - DOMOTZ_API_KEY=${DOMOTZ_API_KEY:-}
+      - DOMOTZ_REGION=${DOMOTZ_REGION:-us-east-1}
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
