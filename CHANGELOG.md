@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/wyre-technology/domotz-mcp/compare/v1.0.1...v1.0.2) (2026-04-06)
+
+
+### Bug Fixes
+
+* **ci:** add OCI source label to Dockerfile for GHCR repo linkage ([9d65640](https://github.com/wyre-technology/domotz-mcp/commit/9d656409428fd2c83b5be0e957a3652b6bbb53fe))
+
 ## [1.0.1](https://github.com/wyre-technology/domotz-mcp/compare/v1.0.0...v1.0.1) (2026-04-06)
 
 
