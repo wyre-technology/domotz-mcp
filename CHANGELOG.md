@@ -1,3 +1,10 @@
+## [1.0.3](https://github.com/wyre-technology/domotz-mcp/compare/v1.0.2...v1.0.3) (2026-04-06)
+
+
+### Bug Fixes
+
+* per-request MCP Server+Transport for gateway compatibility ([a88a92b](https://github.com/wyre-technology/domotz-mcp/commit/a88a92bdca41c63bd972822baca2bc65b14988eb))
+
 ## [1.0.2](https://github.com/wyre-technology/domotz-mcp/compare/v1.0.1...v1.0.2) (2026-04-06)
 
 
