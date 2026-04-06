@@ -1,11 +1,7 @@
 import { createServer as createHttpServer } from 'node:http';
-import { randomUUID } from 'node:crypto';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
-import { isInitializeRequest } from '@modelcontextprotocol/sdk/types.js';
 import { createServer } from './server.js';
 import { logger } from './utils/logger.js';
-
-const transports: Record<string, StreamableHTTPServerTransport> = {};
 
 const port = parseInt(process.env.MCP_HTTP_PORT || '8080', 10);
 const host = process.env.MCP_HTTP_HOST || '0.0.0.0';
@@ -41,54 +37,20 @@ const httpServer = createHttpServer(async (req, res) => {
     if (region) process.env.DOMOTZ_REGION = region;
   }
 
-  const sessionId = req.headers['mcp-session-id'] as string | undefined;
+  // Create fresh server + transport per request (stateless)
+  const server = createServer();
+  const transport = new StreamableHTTPServerTransport({
+    sessionIdGenerator: undefined,
+    enableJsonResponse: true,
+  });
 
-  if (req.method === 'POST') {
-    const chunks: Buffer[] = [];
-    await new Promise((resolve, reject) => {
-      req.on('data', c => chunks.push(c));
-      req.on('end', resolve);
-      req.on('error', reject);
-    });
-    const body = Buffer.concat(chunks).toString();
-    const parsed = JSON.parse(body);
+  res.on('close', () => {
+    transport.close();
+    server.close();
+  });
 
-    if (sessionId && transports[sessionId]) {
-      await transports[sessionId].handleRequest(req, res, parsed);
-      return;
-    }
-
-    if (!sessionId && isInitializeRequest(parsed)) {
-      const transport = new StreamableHTTPServerTransport({
-        sessionIdGenerator: () => randomUUID(),
-        enableJsonResponse: true,
-        onsessioninitialized: (sid) => { transports[sid] = transport; },
-      });
-      transport.onclose = () => {
-        const sid = transport.sessionId;
-        if (sid) delete transports[sid];
-      };
-      const server = createServer();
-      await server.connect(transport);
-      await transport.handleRequest(req, res, parsed);
-      return;
-    }
-
-    res.writeHead(400, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ jsonrpc: '2.0', error: { code: -32000, message: 'Bad Request' }, id: null }));
-    return;
-  }
-
-  if (req.method === 'GET' || req.method === 'DELETE') {
-    if (!sessionId || !transports[sessionId]) {
-      res.writeHead(400).end('Invalid session');
-      return;
-    }
-    await transports[sessionId].handleRequest(req, res);
-    return;
-  }
-
-  res.writeHead(405).end();
+  await server.connect(transport);
+  await transport.handleRequest(req, res);
 });
 
 httpServer.listen(port, host, () => {
