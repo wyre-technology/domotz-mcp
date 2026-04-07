@@ -50,7 +50,7 @@ jobs:
           fi
 
       - name: Discord release notification
-        if: steps.release_info.outputs.released == 'true'
+        if: false  # disabled - too noisy, re-enable later
         uses: sarisia/actions-status-discord@v1
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
