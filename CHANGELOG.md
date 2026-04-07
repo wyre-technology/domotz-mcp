@@ -1,3 +1,10 @@
+## [1.0.4](https://github.com/wyre-technology/domotz-mcp/compare/v1.0.3...v1.0.4) (2026-04-07)
+
+
+### Bug Fixes
+
+* **ci:** deploy :latest tag, force revision via env var bump ([d4e2f5c](https://github.com/wyre-technology/domotz-mcp/commit/d4e2f5c77d2f1b2f42e71d65fc579abbd6b92bb4))
+
 ## [1.0.3](https://github.com/wyre-technology/domotz-mcp/compare/v1.0.2...v1.0.3) (2026-04-06)
 
 
