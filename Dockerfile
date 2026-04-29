@@ -9,6 +9,7 @@ FROM node:22-alpine AS production
 # OCI label links the GHCR package to this repository,
 # enabling GITHUB_TOKEN write access from Actions workflows.
 LABEL org.opencontainers.image.source="https://github.com/wyre-technology/domotz-mcp"
+LABEL io.modelcontextprotocol.server.name="io.github.wyre-technology/domotz-mcp"
 RUN addgroup -g 1001 -S appuser && adduser -S appuser -u 1001 -G appuser
 WORKDIR /app
 COPY --from=builder /app/dist ./dist
