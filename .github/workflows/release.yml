@@ -38,6 +38,9 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          # Strip leading "v" so downstream consumers (docker tag, server.json identifier)
+          # don't double-prefix to vvX.Y.Z.
+          VERSION="${VERSION#v}"
           if [ -n "$VERSION" ]; then
             echo "version=$VERSION" >> "$GITHUB_OUTPUT"
             echo "released=true" >> "$GITHUB_OUTPUT"
